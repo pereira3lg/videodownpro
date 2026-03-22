@@ -28,3 +28,9 @@
     "start": "node app.js"
   }
 }
+
+{
+  "engines": {
+    "node": "18.x"
+  }
+}
