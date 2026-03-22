@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoDown Pro – Baixador de Vídeos</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <!-- Partículas de fundo -->
+    <div class="bg-animation">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="container">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>VideoDown <span>Pro</span></h1>
+                    <p>Baixador Universal de Vídeos</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="settings-btn" onclick="toggleSettings()" title="Configurações">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div class="header-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>100% Gratuito</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Plataformas suportadas -->
+        <div class="platforms-bar">
+            <span class="platforms-label"><i class="fas fa-check-circle"></i> Plataformas suportadas:</span>
+            <div class="platforms-list">
+                <span class="platform-badge youtube"><i class="fab fa-youtube"></i> YouTube</span>
+                <span class="platform-badge tiktok"><i class="fab fa-tiktok"></i> TikTok</span>
+                <span class="platform-badge instagram"><i class="fab fa-instagram"></i> Instagram</span>
+                <span class="platform-badge twitter"><i class="fab fa-twitter"></i> Twitter/X</span>
+                <span class="platform-badge facebook"><i class="fab fa-facebook"></i> Facebook</span>
+                <span class="platform-badge twitch"><i class="fab fa-twitch"></i> Twitch</span>
+                <span class="platform-badge reddit"><i class="fab fa-reddit"></i> Reddit</span>
+                <span class="platform-badge other"><i class="fas fa-globe"></i> +1000</span>
+            </div>
+        </div>
+
+        <!-- Card principal -->
+        <div class="main-card">
+
+            <!-- Input URL -->
+            <div class="input-section">
+                <label class="input-label">
+                    <i class="fas fa-link"></i>
+                    Cole o link do vídeo aqui
+                </label>
+                <div class="input-wrapper">
+                    <input
+                        type="url"
+                        id="urlInput"
+                        class="url-input"
+                        placeholder="https://www.youtube.com/watch?v=... ou qualquer outro link"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                    <button class="paste-btn" id="pasteBtn" title="Colar da área de transferência">
+                        <i class="fas fa-clipboard"></i>
+                    </button>
+                </div>
+                <button class="analyze-btn" id="analyzeBtn" onclick="analyzeVideo()">
+                    <i class="fas fa-search"></i>
+                    Analisar Vídeo
+                    <div class="btn-shine"></div>
+                </button>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading-section" id="loadingSection" style="display:none">
+                <div class="loading-spinner">
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-icon"><i class="fas fa-search"></i></div>
+                </div>
+                <p class="loading-text">Analisando o vídeo...</p>
+                <p class="loading-subtext">Buscando formatos disponíveis</p>
+            </div>
+
+            <!-- Preview do Vídeo -->
+            <div class="video-preview" id="videoPreview" style="display:none">
+                <div class="preview-thumbnail">
+                    <img id="thumbnailImg" src="" alt="Thumbnail do vídeo">
+                    <div class="thumbnail-overlay">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="platform-badge-thumb" id="platformBadge"></div>
+                </div>
+                <div class="preview-info">
+                    <h3 id="videoTitle" class="video-title"></h3>
+                    <div class="video-meta">
+                        <span id="videoDuration"><i class="far fa-clock"></i> --</span>
+                        <span id="videoUploader"><i class="fas fa-user"></i> --</span>
+                        <span id="videoViews"><i class="fas fa-eye"></i> --</span>
+                    </div>
+                    <div class="video-description" id="videoDescription"></div>
+                </div>
+            </div>
+
+            <!-- Opções de Download -->
+            <div class="download-options" id="downloadOptions" style="display:none">
+                <h3 class="section-title"><i class="fas fa-sliders-h"></i> Opções de Download</h3>
+
+                <!-- Tabs: Vídeo / Áudio -->
+                <div class="format-tabs">
+                    <button class="tab-btn active" id="tabVideo" onclick="switchTab('video')">
+                        <i class="fas fa-film"></i> Vídeo
+                    </button>
+                    <button class="tab-btn" id="tabAudio" onclick="switchTab('audio')">
+                        <i class="fas fa-music"></i> Somente Áudio
+                    </button>
+                </div>
+
+                <!-- Tab Vídeo -->
+                <div class="tab-content" id="tabContentVideo">
+                    <div class="quality-grid" id="qualityGrid">
+                        <!-- Preenchido via JS -->
+                    </div>
+                </div>
+
+                <!-- Tab Áudio -->
+                <div class="tab-content" id="tabContentAudio" style="display:none">
+                    <div class="audio-options">
+                        <div class="audio-option selected" data-format="mp3" data-quality="320k" onclick="selectAudio(this)">
+                            <i class="fas fa-music"></i>
+                            <span class="audio-format">MP3</span>
+                            <span class="audio-quality">320 kbps</span>
+                            <span class="audio-badge best">Melhor</span>
+                        </div>
+                        <div class="audio-option" data-format="mp3" data-quality="192k" onclick="selectAudio(this)">
+                            <i class="fas fa-music"></i>
+                            <span class="audio-format">MP3</span>
+                            <span class="audio-quality">192 kbps</span>
+                            <span class="audio-badge">Padrão</span>
+                        </div>
+                        <div class="audio-option" data-format="mp3" data-quality="128k" onclick="selectAudio(this)">
+                            <i class="fas fa-music"></i>
+                            <span class="audio-format">MP3</span>
+                            <span class="audio-quality">128 kbps</span>
+                            <span class="audio-badge small">Menor</span>
+                        </div>
+                        <div class="audio-option" data-format="m4a" data-quality="best" onclick="selectAudio(this)">
+                            <i class="fas fa-headphones"></i>
+                            <span class="audio-format">M4A</span>
+                            <span class="audio-quality">Original</span>
+                            <span class="audio-badge">AAC</span>
+                        </div>
+                        <div class="audio-option" data-format="opus" data-quality="best" onclick="selectAudio(this)">
+                            <i class="fas fa-headphones-alt"></i>
+                            <span class="audio-format">OPUS</span>
+                            <span class="audio-quality">Original</span>
+                            <span class="audio-badge">OPUS</span>
+                        </div>
+                        <div class="audio-option" data-format="wav" data-quality="best" onclick="selectAudio(this)">
+                            <i class="fas fa-wave-square"></i>
+                            <span class="audio-format">WAV</span>
+                            <span class="audio-quality">Lossless</span>
+                            <span class="audio-badge lossless">Lossless</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opções extras -->
+                <div class="extra-options">
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="subtitlesCheck">
+                        <span class="checkbox-custom"></span>
+                        <i class="fas fa-closed-captioning"></i> Baixar legendas (se disponível)
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="metadataCheck" checked>
+                        <span class="checkbox-custom"></span>
+                        <i class="fas fa-tag"></i> Incluir metadados
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="thumbnailCheck">
+                        <span class="checkbox-custom"></span>
+                        <i class="fas fa-image"></i> Baixar thumbnail separada
+                    </label>
+                </div>
+
+                <!-- Botão Download -->
+                <button class="download-btn" id="downloadBtn" onclick="startDownload()">
+                    <i class="fas fa-download"></i>
+                    Baixar Agora
+                    <div class="btn-shine"></div>
+                </button>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-section" id="progressSection" style="display:none">
+                <div class="progress-header">
+                    <span class="progress-label"><i class="fas fa-download"></i> Baixando...</span>
+                    <span class="progress-percent" id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar" style="width:0%"></div>
+                    <div class="progress-glow" id="progressGlow" style="left:0%"></div>
+                </div>
+                <div class="progress-details">
+                    <span id="progressSpeed"><i class="fas fa-tachometer-alt"></i> Calculando...</span>
+                    <span id="progressETA"><i class="far fa-clock"></i> ETA: --</span>
+                    <span id="progressSize"><i class="fas fa-database"></i> --</span>
+                </div>
+            </div>
+
+            <!-- Resultado -->
+            <div class="result-section" id="resultSection" style="display:none">
+                <div class="result-card success">
+                    <div class="result-icon"><i class="fas fa-check-circle"></i></div>
+                    <h3>Download Concluído!</h3>
+                    <p id="resultMessage">Seu vídeo foi baixado com sucesso.</p>
+                    <p id="resultFilePath" class="result-filepath"></p>
+                    <div class="result-actions">
+                        <button class="result-btn primary" onclick="openDownloadFolder()">
+                            <i class="fas fa-folder-open"></i> Abrir Pasta
+                        </button>
+                        <button class="result-btn secondary" onclick="resetForm()">
+                            <i class="fas fa-plus"></i> Novo Download
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Erro -->
+            <div class="error-section" id="errorSection" style="display:none">
+                <div class="result-card error">
+                    <div class="result-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <h3>Ocorreu um Erro</h3>
+                    <p id="errorMessage">Não foi possível baixar o vídeo.</p>
+                    <div class="result-actions">
+                        <button class="result-btn secondary" onclick="resetForm()">
+                            <i class="fas fa-redo"></i> Tentar Novamente
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Histórico de Downloads -->
+        <div class="history-section" id="historySection" style="display:none">
+            <h3 class="section-title"><i class="fas fa-history"></i> Histórico de Downloads</h3>
+            <div class="history-list" id="historyList"></div>
+            <button class="clear-history-btn" onclick="clearHistory()">
+                <i class="fas fa-trash"></i> Limpar Histórico
+            </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="stat-icon"><i class="fas fa-download"></i></span>
+                <span class="stat-number" id="totalDownloads">0</span>
+                <span class="stat-label">Downloads</span>
+            </div>
+            <div class="stat">
+                <span class="stat-icon"><i class="fas fa-database"></i></span>
+                <span class="stat-number" id="totalSize">0 MB</span>
+                <span class="stat-label">Baixados</span>
+            </div>
+            <div class="stat">
+                <span class="stat-icon"><i class="fas fa-globe"></i></span>
+                <span class="stat-number">1000+</span>
+                <span class="stat-label">Sites</span>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>
+                <i class="fas fa-heart" style="color:#e74c3c"></i>
+                Powered by <strong>yt-dlp</strong> • Uso pessoal apenas • Respeite os direitos autorais
+            </p>
+            <p class="footer-version">VideoDown Pro v1.0</p>
+        </footer>
+    </div>
+
+    <!-- Toast notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Configurações -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <h3><i class="fas fa-cog"></i> Configurações</h3>
+            <button class="close-settings" onclick="toggleSettings()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="settings-content">
+            <label class="settings-label">
+                <span>URL da API do Servidor:</span>
+                <input type="text" id="apiUrlInput" class="settings-input" placeholder="https://seu-backend.onrender.com">
+                <small>URL do backend (use localhost para desenvolvimento)</small>
+            </label>
+            <button class="save-settings-btn" onclick="saveApiUrl()">
+                <i class="fas fa-save"></i> Salvar
+            </button>
+            <button class="test-connection-btn" onclick="testConnection()">
+                <i class="fas fa-plug"></i> Testar Conexão
+            </button>
+            <div class="help-text">
+                <p><strong>Configuração de Produção:</strong></p>
+                <ol>
+                    <li>Backend: Configure no Render (https://render.com)</li>
+                    <li>Frontend: Configure no Netlify (https://netlify.com)</li>
+                    <li>Atualize a URL nas configurações do app</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <div class="settings-overlay" id="settingsOverlay" onclick="toggleSettings()"></div>
+
+    <script>
+        // Diagnóstico inicial
+        console.log('HTML carregado');
+        window.onerror = function(msg, url, line) {
+            console.error('Erro JS:', msg, 'Linha:', line);
+        };
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
